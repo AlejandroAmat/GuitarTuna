@@ -2,15 +2,16 @@
 function listen(){
     navigator.mediaDevices.getUserMedia({ audio: true })
         .then(function (stream) {
-
+            const elem = document.getElementById("freq");
             console.log("SI")
             mediaStream = stream;
             const audioContext = new AudioContext();
-            
+            let lastValue =0;
             const microphone = audioContext.createMediaStreamSource(stream);
 
             const analyser = audioContext.createAnalyser();
-            analyser.fftSize = 2048; // Set FFT size
+            analyser.fftSize = 8192; // Set FFT size
+            analyser.frequencyBinCount=4096;
             const bufferLength = analyser.frequencyBinCount;
             const dataArray = new Uint8Array(bufferLength);
             
@@ -35,6 +36,8 @@ function listen(){
                 // Use peakFrequency and peakAmplitude as needed
                 console.log('Peak Frequency (Hz):', peakFrequency);
                 console.log('Peak Amplitude:', peakAmplitude);
+
+                elem.textContent = "Frequency = "+ peakFrequency + "Hz";
             }
 
             function performFFT() {
